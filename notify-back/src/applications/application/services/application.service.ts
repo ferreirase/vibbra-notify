@@ -8,8 +8,8 @@ export class ApplicationService {
   constructor(private readonly applicationRepository: ApplicationRepository) {}
 
   async create(
-    userId: string,
     createApplicationDto: CreateApplicationDto,
+    userId: string,
   ): Promise<Application> {
     return await this.applicationRepository.create({
       ...createApplicationDto,

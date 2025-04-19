@@ -23,6 +23,9 @@ export class Application {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  description: string;
+
   @Column('simple-array')
   channels: NotificationChannel[];
 

@@ -12,13 +12,17 @@ import {
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/infrastructure/guards/jwt-auth.guard';
 import { EmailTemplateService } from '../../application/services/email-template.service';
-import { EmailTemplate } from '../../domain/entities/email-template.entity';
 import { CreateEmailTemplateDto } from '../dto/create-email-template.dto';
+import {
+  EmailTemplateListResponseDto,
+  EmailTemplateResponseDto,
+} from '../dto/email-template-response.dto';
 
 @ApiTags('email-templates')
 @ApiBearerAuth()
@@ -28,72 +32,140 @@ export class EmailTemplatesController {
   constructor(private readonly emailTemplateService: EmailTemplateService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new email template' })
+  @ApiOperation({ summary: 'Criar um novo template de email' })
+  @ApiParam({
+    name: 'applicationId',
+    description: 'ID do aplicativo',
+    example: '550e8400-e29b-41d4-a716-446655440001',
+    type: 'string',
+  })
   @ApiResponse({
     status: 201,
-    description: 'Email template created successfully',
+    description: 'Template de email criado com sucesso',
+    type: EmailTemplateResponseDto,
   })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  @ApiResponse({ status: 404, description: 'Aplicativo não encontrado' })
   async create(
     @Request() req,
     @Param('applicationId') applicationId: string,
     @Body() createEmailTemplateDto: CreateEmailTemplateDto,
-  ): Promise<EmailTemplate> {
-    return await this.emailTemplateService.create(
+  ): Promise<EmailTemplateResponseDto> {
+    const template = await this.emailTemplateService.create(
       applicationId,
       req.user.id,
       createEmailTemplateDto,
     );
+    return new EmailTemplateResponseDto(template);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all email templates for an application' })
-  @ApiResponse({ status: 200, description: 'Email templates found' })
+  @ApiOperation({
+    summary: 'Listar todos os templates de email de um aplicativo',
+  })
+  @ApiParam({
+    name: 'applicationId',
+    description: 'ID do aplicativo',
+    example: '550e8400-e29b-41d4-a716-446655440001',
+    type: 'string',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Templates encontrados',
+    type: EmailTemplateListResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Aplicativo não encontrado' })
   async findAll(
     @Request() req,
     @Param('applicationId') applicationId: string,
-  ): Promise<EmailTemplate[]> {
-    return await this.emailTemplateService.findByApplicationId(
+  ): Promise<EmailTemplateListResponseDto> {
+    const templates = await this.emailTemplateService.findByApplicationId(
       applicationId,
       req.user.id,
     );
+    return new EmailTemplateListResponseDto(templates);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get email template by id' })
-  @ApiResponse({ status: 200, description: 'Email template found' })
-  @ApiResponse({ status: 404, description: 'Email template not found' })
-  async findOne(@Param('id') id: string): Promise<EmailTemplate> {
-    return await this.emailTemplateService.findById(id);
+  @ApiOperation({ summary: 'Buscar template de email por ID' })
+  @ApiParam({
+    name: 'applicationId',
+    description: 'ID do aplicativo',
+    example: '550e8400-e29b-41d4-a716-446655440001',
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do template',
+    example: '550e8400-e29b-41d4-a716-446655440002',
+    type: 'string',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Template encontrado',
+    type: EmailTemplateResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Template não encontrado' })
+  async findOne(@Param('id') id: string): Promise<EmailTemplateResponseDto> {
+    const template = await this.emailTemplateService.findById(id);
+    return new EmailTemplateResponseDto(template);
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Update email template' })
+  @ApiOperation({ summary: 'Atualizar template de email' })
+  @ApiParam({
+    name: 'applicationId',
+    description: 'ID do aplicativo',
+    example: '550e8400-e29b-41d4-a716-446655440001',
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do template',
+    example: '550e8400-e29b-41d4-a716-446655440002',
+    type: 'string',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Email template updated successfully',
+    description: 'Template atualizado com sucesso',
+    type: EmailTemplateResponseDto,
   })
-  @ApiResponse({ status: 404, description: 'Email template not found' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos' })
+  @ApiResponse({ status: 404, description: 'Template não encontrado' })
   async update(
     @Request() req,
     @Param('applicationId') applicationId: string,
     @Param('id') id: string,
     @Body() updateEmailTemplateDto: CreateEmailTemplateDto,
-  ): Promise<EmailTemplate> {
-    return await this.emailTemplateService.update(
+  ): Promise<EmailTemplateResponseDto> {
+    const template = await this.emailTemplateService.update(
       id,
       applicationId,
       req.user.id,
       updateEmailTemplateDto,
     );
+    return new EmailTemplateResponseDto(template);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete email template' })
+  @ApiOperation({ summary: 'Excluir template de email' })
+  @ApiParam({
+    name: 'applicationId',
+    description: 'ID do aplicativo',
+    example: '550e8400-e29b-41d4-a716-446655440001',
+    type: 'string',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID do template',
+    example: '550e8400-e29b-41d4-a716-446655440002',
+    type: 'string',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Email template deleted successfully',
+    description: 'Template excluído com sucesso',
   })
-  @ApiResponse({ status: 404, description: 'Email template not found' })
+  @ApiResponse({ status: 404, description: 'Template não encontrado' })
   async remove(
     @Request() req,
     @Param('applicationId') applicationId: string,
