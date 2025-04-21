@@ -5,6 +5,7 @@ import * as React from "react"
 interface SidebarContextType {
   isOpen: boolean
   setIsOpen: (isOpen: boolean) => void
+  toggleSidebar: () => void
 }
 
 const SidebarContext = React.createContext<SidebarContextType | undefined>(undefined)
@@ -12,11 +13,11 @@ const SidebarContext = React.createContext<SidebarContextType | undefined>(undef
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState(false)
 
-  return (
-    <SidebarContext.Provider value={{ isOpen, setIsOpen }}>
-      {children}
-    </SidebarContext.Provider>
-  )
+  const toggleSidebar = React.useCallback(() => {
+    setIsOpen((prev) => !prev)
+  }, [])
+
+  return <SidebarContext.Provider value={{ isOpen, setIsOpen, toggleSidebar }}>{children}</SidebarContext.Provider>
 }
 
 export function useSidebar() {
@@ -25,4 +26,4 @@ export function useSidebar() {
     throw new Error("useSidebar must be used within a SidebarProvider")
   }
   return context
-} 
+}

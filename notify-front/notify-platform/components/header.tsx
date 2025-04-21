@@ -14,30 +14,25 @@ import { useSidebar } from "@/contexts/sidebar-context"
 import { useTranslation } from "@/hooks/use-translation"
 import { Globe, LogOut, Menu, Moon, Settings, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import Image from "next/image"
 import Link from "next/link"
+import Image from "next/image"
 
 export function Header() {
   const { setTheme } = useTheme()
   const { t, setLanguage, language } = useTranslation()
   const { user, logout } = useAuth()
-  const { isOpen, setIsOpen } = useSidebar()
+  const { toggleSidebar } = useSidebar()
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center justify-between px-4">
+    <header className="fixed top-0 left-0 right-0 z-[100] border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 h-16">
+      <div className="flex h-full items-center justify-between px-4">
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsOpen(!isOpen)}
-            className="h-9 w-9"
-          >
+          <Button variant="ghost" size="icon" onClick={toggleSidebar} className="h-9 w-9">
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle Menu</span>
           </Button>
           <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="font-bold text-xl bg-gradient-primary bg-clip-text text-transparent">
+            <span className="font-bold text-xl bg-gradient-to-r from-[hsl(var(--primary-gradient-from))] to-[hsl(var(--primary-gradient-to))] bg-clip-text text-transparent">
               NotifyHub
             </span>
           </Link>
@@ -50,7 +45,7 @@ export function Header() {
                 <span className="sr-only">{t("settings")}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="z-[110] w-56" sideOffset={5}>
               <DropdownMenuItem onClick={() => setTheme("light")}>
                 <Sun className="mr-2 h-4 w-4" />
                 <span>{t("light_mode")}</span>
@@ -72,19 +67,11 @@ export function Header() {
                 <span className="sr-only">{t("language")}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="z-[110] w-56" sideOffset={5}>
               <DropdownMenuItem onClick={() => setLanguage("pt-BR")}>
                 <div className="flex items-center gap-2">
-                  <Image
-                    src="/flags/br.svg"
-                    alt="Brasil"
-                    width={20}
-                    height={15}
-                    className="h-4 w-6"
-                  />
-                  <span className={language === "pt-BR" ? "font-bold" : ""}>
-                    Português (BR)
-                  </span>
+                  <Image src="/flags/br.svg" alt="Brasil" width={20} height={15} className="h-4 w-6 rounded-sm" />
+                  <span className={language === "pt-BR" ? "font-bold" : ""}>Português (BR)</span>
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setLanguage("en-US")}>
@@ -94,11 +81,9 @@ export function Header() {
                     alt="United States"
                     width={20}
                     height={15}
-                    className="h-4 w-6"
+                    className="h-4 w-6 rounded-sm"
                   />
-                  <span className={language === "en-US" ? "font-bold" : ""}>
-                    English (US)
-                  </span>
+                  <span className={language === "en-US" ? "font-bold" : ""}>English (US)</span>
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -113,7 +98,7 @@ export function Header() {
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="z-[110] w-56" sideOffset={5}>
               <div className="flex items-center justify-start gap-2 p-2">
                 <div className="flex flex-col space-y-1 leading-none">
                   <p className="font-medium">{user?.name || "Usuário"}</p>

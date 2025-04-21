@@ -47,7 +47,7 @@ export default function LoginPage() {
 
     setErrors({}) // Limpa erros anteriores
     const success = await login(email, password)
-    
+
     if (success) {
       router.push("/dashboard")
     }
@@ -55,56 +55,65 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-muted/40">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold text-center">NotifyHub</CardTitle>
-          <CardDescription className="text-center">Entre com sua conta para acessar o sistema</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={isLoading}
-              />
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-            </div>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Senha</Label>
-                <Link href="/esqueci-senha" className="text-sm text-primary hover:underline">
-                  Esqueceu a senha?
-                </Link>
+    <div className="relative min-h-screen w-full overflow-hidden">
+      {/* Diagonal gradient background */}
+      <div className="absolute inset-0 bg-gradient-diagonal -skew-y-6 transform origin-top-right"></div>
+
+      <div className="relative z-10 flex items-center justify-center min-h-screen">
+        <Card className="w-full max-w-md shadow-xl bg-background/95 backdrop-blur-sm">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-[hsl(var(--primary-gradient-from))] to-[hsl(var(--primary-gradient-to))] bg-clip-text text-transparent">
+              NotifyHub
+            </CardTitle>
+            <CardDescription className="text-center">Entre com sua conta para acessar o sistema</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
+                  className="border-primary/20 focus-visible:ring-primary"
+                />
+                {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
               </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading}
-              />
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Senha</Label>
+                  <Link href="/esqueci-senha" className="text-sm text-primary hover:underline">
+                    Esqueceu a senha?
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={isLoading}
+                  className="border-primary/20 focus-visible:ring-primary"
+                />
+                {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              </div>
+              <Button type="submit" className="w-full" variant="gradient" disabled={isLoading}>
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+            </form>
+          </CardContent>
+          <CardFooter className="flex flex-col">
+            <div className="text-center text-sm">
+              Não tem uma conta?{" "}
+              <Link href="/cadastro" className="text-primary hover:underline font-medium">
+                Cadastre-se
+              </Link>
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Entrando..." : "Entrar"}
-            </Button>
-          </form>
-        </CardContent>
-        <CardFooter className="flex flex-col">
-          <div className="text-center text-sm">
-            Não tem uma conta?{" "}
-            <Link href="/cadastro" className="text-primary hover:underline">
-              Cadastre-se
-            </Link>
-          </div>
-        </CardFooter>
-      </Card>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   )
 }

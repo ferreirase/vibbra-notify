@@ -1,5 +1,5 @@
-import { cva, type VariantProps } from "class-variance-authority"
 import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
@@ -15,17 +15,6 @@ const badgeVariants = cva(
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
-        gradient: "border-transparent bg-gradient-primary text-primary-foreground hover:bg-gradient-secondary",
-        primary50: "border-transparent bg-primary-50 text-primary-900 hover:bg-primary-100",
-        primary100: "border-transparent bg-primary-100 text-primary-900 hover:bg-primary-200",
-        primary200: "border-transparent bg-primary-200 text-primary-900 hover:bg-primary-300",
-        primary300: "border-transparent bg-primary-300 text-primary-900 hover:bg-primary-400",
-        primary400: "border-transparent bg-primary-400 text-primary-900 hover:bg-primary-500",
-        primary500: "border-transparent bg-primary-500 text-primary-50 hover:bg-primary-600",
-        primary600: "border-transparent bg-primary-600 text-primary-50 hover:bg-primary-700",
-        primary700: "border-transparent bg-primary-700 text-primary-50 hover:bg-primary-800",
-        primary800: "border-transparent bg-primary-800 text-primary-50 hover:bg-primary-900",
-        primary900: "border-transparent bg-primary-900 text-primary-50 hover:bg-primary-800",
       },
     },
     defaultVariants: {

@@ -7,11 +7,14 @@ import { Bell, History, Home, Send, Settings } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
+import { useTheme } from "next-themes"
 
 export function Sidebar() {
   const pathname = usePathname()
   const { t } = useTranslation()
-  const { isOpen, setIsOpen } = useSidebar()
+  const { isOpen, setIsOpen, toggleSidebar } = useSidebar()
+  const { theme } = useTheme()
+  const isDarkTheme = theme === "dark"
 
   const routes = [
     {
@@ -43,40 +46,53 @@ export function Sidebar() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const sidebar = document.getElementById('sidebar')
+      const sidebar = document.getElementById("sidebar")
       if (sidebar && !sidebar.contains(event.target as Node) && isOpen) {
         setIsOpen(false)
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [isOpen, setIsOpen])
 
   return (
-    <aside 
+    <aside
       id="sidebar"
       className={cn(
-        "fixed left-0 top-0 h-full bg-background border-r transition-all duration-200 ease-in-out",
-        "min-w-fit max-w-fit whitespace-nowrap",
-        isOpen ? "translate-x-0" : "-translate-x-full"
+        "fixed left-0 top-0 h-full sidebar-youtube z-[90] transition-all duration-300 ease-in-out",
+        isOpen ? "w-64" : "w-20",
+        isOpen ? "" : "sidebar-collapsed",
       )}
     >
       <div className="flex flex-col h-full pt-16">
-        <nav className="flex flex-col space-y-1 p-4">
+        {/* YouTube-style colored dots */}
+        <div className="absolute top-4 left-4 flex space-x-2">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+        </div>
+
+        <nav className="flex flex-col p-3">
           {routes.map((route) => (
             <Link
               key={route.href}
               href={route.href}
               className={cn(
-                "flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground",
-                pathname === route.href ? "bg-accent text-accent-foreground" : "text-muted-foreground",
+                "sidebar-item",
+                pathname === route.href ? "active" : "",
+                pathname === route.href && !isDarkTheme ? "bg-gradient-primary text-black" : "",
               )}
             >
-              <route.icon className="h-5 w-5 flex-shrink-0" />
-              {route.label}
+              <div className={cn("sidebar-item-icon", !isDarkTheme ? "text-black" : "text-white")}>
+                <route.icon className="h-5 w-5" />
+              </div>
+              {isOpen && <span className={!isDarkTheme ? "text-black" : "text-white"}>{route.label}</span>}
             </Link>
           ))}
+
+          {/* Keep the divider */}
+          <div className="sidebar-divider"></div>
         </nav>
       </div>
     </aside>
